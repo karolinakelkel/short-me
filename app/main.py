@@ -3,10 +3,10 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-import models
-import schemas
-import utils
-from database import SessionLocal, engine, Base
+from app import models
+from app import schemas
+from app import utils
+from app.database import SessionLocal, engine, Base
 
 app = FastAPI()
 

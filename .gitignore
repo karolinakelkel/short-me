@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 
 # SQLite database
-.db
+*.db
 db.sqlite3
 db.sqlite3-journal
 
