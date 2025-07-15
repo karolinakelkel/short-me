@@ -2,7 +2,8 @@
 A minimal URL shortener API
 
 ## Features
-- `POST /shorten` – accepts a long URL and returns a short one
+- `POST /shorten` – accepts a long URL and returns a short one.  
+If the URL has already been shortened, returns the existing short codeIf the URL has already been shortened, returns the existing short code
 - `GET /{code}` – redirects to the original long URL
 - Basic persistence using SQLite
 - Error handling
