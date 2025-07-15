@@ -1,14 +1,17 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import RedirectResponse
-from sqlalchemy.orm import Session
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
-import models, schemas, utils
+import models
+import schemas
+import utils
 from database import SessionLocal, engine, Base
 
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
+
 
 def get_db():
     db = SessionLocal()
@@ -17,9 +20,10 @@ def get_db():
     finally:
         db.close()
 
+
 @app.post('/shorten', response_model=schemas.URLResponse)
 def create_short_url(request: schemas.URLRequest, db: Session = Depends(get_db)):
-    #Collision check
+    # Collision check
     while True:
         short_code = utils.generate_code()
         statement = select(models.URL).where(models.URL.short_code == short_code)
@@ -32,6 +36,7 @@ def create_short_url(request: schemas.URLRequest, db: Session = Depends(get_db))
 
     short_url = f'http://localhost:8000/{short_code}'
     return schemas.URLResponse(short_url=short_url)
+
 
 @app.get('/{code}')
 def redirect_to_url(code: str, db: Session = Depends(get_db)):
