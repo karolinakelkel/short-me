@@ -30,7 +30,7 @@ def create_short_url(request: schemas.URLRequest, db: Session = Depends(get_db))
         if db.execute(statement).scalar_one_or_none() is None:
             break
 
-    url = models.URL(original_url=request.url, short_code=short_code)
+    url = models.URL(original_url=str(request.url), short_code=short_code)
     db.add(url)
     db.commit()
 
