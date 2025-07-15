@@ -23,16 +23,24 @@ def get_db():
 
 @app.post('/shorten', response_model=schemas.URLResponse)
 def create_short_url(request: schemas.URLRequest, db: Session = Depends(get_db)):
-    # Collision check
-    while True:
-        short_code = utils.generate_code()
-        statement = select(models.URL).where(models.URL.short_code == short_code)
-        if db.execute(statement).scalar_one_or_none() is None:
-            break
+    original_url = str(request.url)
 
-    url = models.URL(original_url=str(request.url), short_code=short_code)
-    db.add(url)
-    db.commit()
+    statement = select(models.URL).where(models.URL.original_url == original_url)
+    result = db.execute(statement).scalar_one_or_none()
+
+    if result is None:
+        # Collision check
+        while True:
+            short_code = utils.generate_code()
+            check_stmt = select(models.URL).where(models.URL.short_code == short_code)
+            if db.execute(check_stmt).scalar_one_or_none() is None:
+                break
+
+        url = models.URL(original_url=original_url, short_code=short_code)
+        db.add(url)
+        db.commit()
+    else:
+        short_code = result.short_code
 
     short_url = f'http://localhost:8000/{short_code}'
     return schemas.URLResponse(short_url=short_url)
