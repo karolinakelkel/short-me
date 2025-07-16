@@ -21,7 +21,7 @@ def test_redirect_to_url():
     response = client.post('/shorten', json={'url': VALID_TEST_URL})
     short_url = response.json()['short_url']
     short_code = short_url.split('/')[-1]
-    response = client.get(f'/{short_code}', allow_redirects=False)
+    response = client.get(f'/{short_code}', follow_redirects=False)
 
     assert response.status_code == 307
     assert response.headers['location'] == VALID_TEST_URL
